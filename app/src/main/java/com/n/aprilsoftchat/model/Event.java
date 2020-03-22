@@ -18,24 +18,12 @@ public class Event<K, V> {
         this.value = value;
     }
 
-    public boolean isHandled() {
-        return handled;
-    }
-
     public V getValueIfNotHandled() {
         if (handled) {
             return null;
         }
         handled = true;
         return value;
-    }
-
-    public K getKeyIfNotHandled() {
-        if (handled) {
-            return null;
-        }
-        handled = true;
-        return key;
     }
 
     public K getKey() {
@@ -46,4 +34,8 @@ public class Event<K, V> {
         return value;
     }
 
+    public boolean isHandled() {
+        return handled;
+    }
+    
 }
