@@ -31,8 +31,6 @@ public class Repo {
     private MutableLiveData<Event<Integer, String>> event = new MutableLiveData<>();
     private MutableLiveData<List<Message>> messages = new MutableLiveData<>();
 
-    private Timer timer;
-
     public static Repo getRepo(Application application) {
         if (repo == null) {
             return new Repo(application);
@@ -70,71 +68,6 @@ public class Repo {
                 event.setValue(new Event<>(Event.EVENT_REQUEST_FAILURE, "Failure. " + t.getMessage()));
             }
         });
-    }
-
-    public void sendMessage(String text) {
-        String username = mPrefs.getString("username", "default_user");
-
-        Call<Void> callback = mClient.sendMessage(username, text);
-        callback.enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (!response.isSuccessful()) {
-                    event.setValue(new Event<>(Event.EVENT_RESPONSE_ERROR, "Error. Code: " + response.code()));
-                    return;
-                }
-
-                event.setValue(new Event<>(Event.EVENT_MESSAGE_SEND, "Success. Code: " + response.code()));
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                event.setValue(new Event<>(Event.EVENT_REQUEST_FAILURE, "Failure. " + t.getMessage()));
-            }
-        });
-    }
-
-    public void startRequestingMessages() {
-        timer = new Timer();
-
-        final Handler handler = new Handler();
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Call<Message> callback = mClient.getMessages(0);
-                        callback.enqueue(new Callback<Message>() {
-                            @Override
-                            public void onResponse(Call<Message> call, Response<Message> response) {
-                                if (!response.isSuccessful() || response.body() == null) {
-                                    event.setValue(new Event<>(Event.EVENT_RESPONSE_ERROR, "Error. Code: " + response.code()));
-                                    return;
-                                }
-
-                                messages.setValue(response.body().getMessages());
-                            }
-
-                            @Override
-                            public void onFailure(Call<Message> call, Throwable t) {
-                                event.setValue(new Event<>(Event.EVENT_REQUEST_FAILURE, "Failure. " + t.getMessage()));
-                            }
-                        });
-                    }
-                });
-            }
-        };
-
-        timer.schedule(task, 0, 5000);
-    }
-
-    public void stopRequestingMessages() {
-        if (timer != null) {
-            timer.cancel();
-            timer.purge();
-            timer = null;
-        }
     }
 
     public MutableLiveData<Event<Integer, String>> getEvent() {
