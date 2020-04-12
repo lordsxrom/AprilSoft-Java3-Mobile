@@ -24,12 +24,10 @@ public class MainActivity extends AppCompatActivity {
 
     private MainActivityViewModel viewModel;
 
-    private EditText etMessage;
-
-    private RecyclerView rvChatbox;
-    private MessageAdapter adapter;
-
     private SharedPreferences preferences;
+
+    private EditText etMessage;
+    private MessageAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private void initViews() {
         etMessage = findViewById(R.id.et_message);
 
-        rvChatbox = findViewById(R.id.rv_chatbox);
+        RecyclerView rvChatbox = findViewById(R.id.rv_chatbox);
         rvChatbox.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new MessageAdapter(getApplicationContext());

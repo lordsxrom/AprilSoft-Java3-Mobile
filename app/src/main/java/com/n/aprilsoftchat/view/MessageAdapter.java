@@ -58,7 +58,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageH
             tvDate = itemView.findViewById(R.id.tv_date);
             tvText = itemView.findViewById(R.id.tv_text);
         }
-
     }
 
 }
